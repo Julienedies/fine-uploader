@@ -215,21 +215,25 @@ buster.testCase("getUniqueId", {
 // @TODO: Need to think about how to really test this one
 
 // obj2url
-//buster.testCase("obj2url", {
-//    setUp: function () {
-//        this.baseUrl = "http://mydomain.com/upload";
-//        this.urlWithEncodedPath = "http://mydomain.com/upload%20me";
-//        this.params1 = { one: "one", two: "two", three: "three" };
-//        this.params2 = { a: "this is a test" };
-//        this.params3 = { a : { b: "innerProp" }};
-//        this.params4 = { a: function () { return "funky"; }};
-//    },
-//
-//    "Base URL with basic object as params": function () {
-//        assert.equals(qq.obj2url(this.params, this.baseUrl), "http://mydomain.com/upload?one=one&two=two&three=three");
-//    },
-//
-//    // there should probably be more tests here
-//});
+buster.testCase("obj2url", {
+    setUp: function () {
+        this.baseUrl = "http://mydomain.com/upload";
+        this.urlWithEncodedPath = "http://mydomain.com/upload%20me";
+        this.params1 = { one: "one", two: "two", three: "three" };
+        this.params2 = { a: "this is a test" };
+        this.params3 = { a : { b: "innerProp" }};
+        this.params4 = { a: function () { return "funky"; }};
+    },
+
+    "Base URL with basic object as params": function () {
+        var varUrl = qq.obj2url(this.params1, this.baseUrl);
+        var controlUrl = $.url(varUrl);
+
+        assert.equals(controlUrl.param('one'), "one");
+        assert.equals(controlUrl.param('two'), "two");
+        assert.equals(controlUrl.param('three'), "three");
+    },
+    // there should probably be more tests here
+});
 
 
