@@ -125,9 +125,9 @@ buster.testCase("trimStr", {
 // extend
 // @TODO: scrapping this for now because *I* think extend should return a new object.
 // Throwing out mutable objects means less bugs.
-/**
+
 buster.testCase("extend", {
-    setUp: function (done) {
+    setUp: function () {
         this.testy = 
             {   one: "one", 
                 two: "two", 
@@ -142,7 +142,7 @@ buster.testCase("extend", {
         this.four_2 = { four: { d: "d" }};
     },
 
-    "simple extend": function () {
+    "// simple extend": function () {
         var testy = qq.extend(this.testy, this.five)
         assert.equals(testy.one, this.testy.one);
         assert.equals(testy.two, this.testy.two);
@@ -151,12 +151,11 @@ buster.testCase("extend", {
         assert.equals(test.five, this.five);
     },
 
-    "nested extend": function () {
-        var testy = qq.extend(this.testy, )
+    "// nested extend": function () {
     },
 
 });
-*/
+
 
 // indexOf
 buster.testCase("indexOf", {
@@ -210,9 +209,11 @@ buster.testCase("getUniqueId", {
 
 // each
 // @TODO: Need to think about how to really test this one
+buster.testCase("each", {});
 
 // bind
 // @TODO: Need to think about how to really test this one
+buster.testCase("bind", {});
 
 // obj2url
 buster.testCase("obj2url", {
@@ -225,6 +226,13 @@ buster.testCase("obj2url", {
         this.params4 = { a: function () { return "funky"; }};
     },
 
+    "Base URL with basic object as param": function () {
+        var varUrl = qq.obj2url(this.params2, this.baseUrl);
+        var controlUrl = $.url(varUrl);
+
+        assert.equals(controlUrl.param('a'), "this is a test");
+    },
+
     "Base URL with basic object as params": function () {
         var varUrl = qq.obj2url(this.params1, this.baseUrl);
         var controlUrl = $.url(varUrl);
@@ -233,7 +241,91 @@ buster.testCase("obj2url", {
         assert.equals(controlUrl.param('two'), "two");
         assert.equals(controlUrl.param('three'), "three");
     },
-    // there should probably be more tests here
+
+    "Base URL with embedded object as a param value": function () {
+        var varUrl = qq.obj2url(this.params3, this.baseUrl);
+        var controlUrl = $.url(varUrl);
+
+        assert.equals(controlUrl.param('a').b, "innerProp");
+    },
+
+    "Base URL with a function as a param value": function () {
+        var varUrl = qq.obj2url(this.params4, this.baseUrl);
+        var controlUrl = $.url(varUrl);
+
+        assert.equals(controlUrl.param('a'), "funky");
+    },
+
+    "Empty URL with params": function () {
+        var varUrl = qq.obj2url(this.params1, "");
+        assert.equals(varUrl, "one=one&two=two&three=three");
+    },
+
+    "Encoded paths are left alone": function () {
+        var varUrl = qq.obj2url(this.params1, this.urlWithEncodedPath);
+        var regex = new RegExp("^" + this.urlWithEncodedPath);
+        assert.match(varUrl, regex);
+    }
 });
+
+
+// obj2FormData
+buster.testCase("obj2FormData", {
+    
+    setUp: function () {
+        
+        this.formData = function () {
+            var data = {};
+            return {
+                append: function (k, v) {
+                    data[decodeURIComponent(k)] = decodeURIComponent(v);
+                },
+                get: function (k) {
+                    return data[k];
+                },
+                clear: function() {
+                    return (data = []);
+                }
+            };
+        }();
+
+        this.params1 = { one: "one", two: "two", three: "three" };
+        this.params2 = { a : { b: "innerProp" }};
+        this.params3 = { a: function () { return "funky"; }};
+    },
+
+    tearDown: function () {
+        this.formData.clear();
+    },
+
+    "Base URL with basic object as param": function () {
+        assert.equals(
+            qq.obj2FormData(this.params1, this.formData).get('one'), 'one');
+        assert.equals(
+            qq.obj2FormData(this.params1, this.formData).get('two'), 'two');
+        assert.equals(
+            qq.obj2FormData(this.params1, this.formData).get('three'), 'three');
+    },
+
+    "Base URL with embedded object as param": function () {
+        assert.equals(qq.obj2FormData(this.params2, this.formData).get('a[b]'), 'innerProp');
+    },
+
+    "Base URL with function as param": function () {
+        assert.equals(qq.obj2FormData(this.params3, this.formData).get('a'), 'funky');
+    }
+});
+
+// obj2Inputs
+buster.testCase("obj2Inputs", {
+   
+    setUp: function () {
+        this.params1 = { one: "one", two: "two", three: "three" };
+        this.params2 = { a : { b: "innerProp" }};
+        this.params3 = { a: function () { return "funky"; }};
+    },
+
+})
+
 
 
