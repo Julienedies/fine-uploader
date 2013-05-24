@@ -7,10 +7,6 @@ before_install:
     - sudo apt-get update -qq
     - sudo apt-get install -qq dbus-x11
 
-branches:
-    only:
-        - 810-add-automation-to-testing-process
-
 before_script:
     - "export DISPLAY=:99.0"
     - "export $(dbus-launch)"
