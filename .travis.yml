@@ -3,14 +3,22 @@ language: node_js
 node_js:
     - "0.10"
 
+before_install:
+    - sudo apt-get update -qq
+    - sudo apt-get install -qq dbus-x11
+
+branches:
+    only:
+        - 810-add-automation-to-testing-process
+
 before_script:
     - "export DISPLAY=:99.0"
     - "export $(dbus-launch)"
-    - export NSS_USE_SHARED_DB=Enabled
+    - export NSS_USE_SHARED_DB=ENABLED
     - "sh -e /etc/init.d/xvfb start"
-    - "sleep 5"
+    - sleep 5
     - node_modules/.bin/buster-server &
-    - sleep 5 
+    - sleep 5
     - "firefox http://localhost:1111/capture &"
     - sleep 5 
 
