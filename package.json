@@ -8,7 +8,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "./node_modules/buster/bin/buster-test",
+    "test": "./node_modules/buster/bin/buster-test --reporter specification",
     "tstsrv": "./node_modules/buster/bin/buster-server"
   },
   "repository": {
@@ -22,8 +22,7 @@
   "bugs": {
     "url": "https://github.com/Widen/fine-uploader/issues"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "buster": "~0.6.12"
   }
